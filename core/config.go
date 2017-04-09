@@ -17,6 +17,7 @@ type config struct {
 }
 
 var Cfg config
+var ExecName string
 
 func (cfg *config) Read() error {
 	file, err := os.Open(configPath)

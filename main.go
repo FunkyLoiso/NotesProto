@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/FunkyLoiso/NotesProto/commands"
 	"github.com/FunkyLoiso/NotesProto/core"
 	"log"
 	"os"
@@ -9,24 +10,18 @@ import (
 )
 
 func printHelp() {
-	appPath, err := os.Executable()
-	if err != nil {
-		log.Printf("os.Executable failed: %v", err)
-		appPath = os.Args[0]
-	}
-	execName := path.Base(appPath)
-	fmt.Printf("%v - somewhat potentially ok notes manager.\nCommands:\n", execName)
+	fmt.Printf("%v - somewhat potentially ok notes manager.\nCommands:\n", core.ExecName)
 
 	maxCmdLengh := 0
-	for cmd, _ := range core.Commands {
+	for cmd, _ := range commands.Commands {
 		if maxCmdLengh < len(cmd) {
 			maxCmdLengh = len(cmd)
 		}
 	}
-	for cmd, info := range core.Commands {
+	for cmd, info := range commands.Commands {
 		fmt.Printf("%-*v%v\n", maxCmdLengh+4, cmd, info.Description)
 	}
-	fmt.Printf("see '%v help <command>' for command details\n", execName)
+	fmt.Printf("see '%v help <command>' for command details\n", core.ExecName)
 }
 
 func main() {
@@ -42,6 +37,16 @@ func main() {
 	log.Println("==================== NotesProto new log entry ====================")
 	log.Printf("starting with args: %v\n", os.Args)
 
+	// determine executable name
+	{
+		appPath, err := os.Executable()
+		if err != nil {
+			log.Printf("os.Executable failed: %v", err)
+			appPath = os.Args[0]
+		}
+		core.ExecName = path.Base(appPath)
+	}
+
 	// read config
 	err = core.Cfg.Read()
 	if err != nil {
@@ -50,11 +55,11 @@ func main() {
 
 	// parse and execute command
 	var (
-		cmd   core.CommandInfo
+		cmd   commands.CommandInfo
 		found bool
 	)
 	if len(os.Args) > 1 {
-		cmd, found = core.Commands[os.Args[1]]
+		cmd, found = commands.Commands[os.Args[1]]
 	} else {
 		found = false
 	}
