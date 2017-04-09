@@ -1,10 +1,10 @@
-package main
+package list
 
 import (
 	"log"
 )
 
-func list() error {
+func Exec() error {
 	log.Println("starting list command")
 
 	return nil

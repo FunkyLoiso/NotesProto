@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"encoding/json"
@@ -16,7 +16,9 @@ type config struct {
 	Editor string
 }
 
-func (cfg *config) read() error {
+var Cfg config
+
+func (cfg *config) Read() error {
 	file, err := os.Open(configPath)
 	if err != nil {
 		log.Printf("Failed to open config: %v", err)
@@ -33,7 +35,7 @@ func (cfg *config) read() error {
 	return nil
 }
 
-func (cfg config) write() error {
+func (cfg config) Write() error {
 	file, err := os.OpenFile(configPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Printf("Failed to open config: %v", err)
