@@ -24,10 +24,19 @@ func printHelp() {
 		log.Printf("os.Executable failed: %v", err)
 		appPath = os.Args[0]
 	}
-	fmt.Printf("%v - somewhat potentially ok notes manager.\nUsage:\n", path.Base(appPath))
-	for cmd, info := range commands {
-		fmt.Printf("%v\t%v\n", cmd, info.description)
+	execName := path.Base(appPath)
+	fmt.Printf("%v - somewhat potentially ok notes manager.\nCommands:\n", execName)
+
+	maxCmdLengh := 0
+	for cmd, _ := range commands {
+		if maxCmdLengh < len(cmd) {
+			maxCmdLengh = len(cmd)
+		}
 	}
+	for cmd, info := range commands {
+		fmt.Printf("%-*v%v\n", maxCmdLengh+4, cmd, info.description)
+	}
+	fmt.Printf("see '%v help <command>' for command details\n", execName)
 }
 
 func main() {

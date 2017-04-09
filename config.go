@@ -11,7 +11,9 @@ const (
 )
 
 type config struct {
-	Source string
+	DBPath string
+	Viewer string
+	Editor string
 }
 
 func (cfg *config) read() error {
