@@ -26,16 +26,16 @@ func printHelp() {
 
 func main() {
 	// open log
-	lFile, err := os.OpenFile("./NotesProto.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	_, err := os.OpenFile("./NotesProto.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Printf("Failed to open log file")
 	} else {
-		log.SetOutput(lFile)
-		log.SetFlags(log.LstdFlags | log.Lmicroseconds | log.Lshortfile)
+		// log.SetOutput(lFile)
 	}
 
+	log.SetFlags(log.LstdFlags | log.Lmicroseconds | log.Lshortfile)
 	log.Println("==================== NotesProto new log entry ====================")
-	log.Printf("starting with args: %v\n", os.Args)
+	log.Printf("starting with args: %v\n", os.Args[1:])
 
 	// determine executable name
 	{
@@ -66,6 +66,7 @@ func main() {
 	if !found {
 		printHelp()
 	} else {
+		log.Printf("Executing comand '%v'", os.Args[1])
 		err = cmd.Execute()
 		if err != nil {
 			log.Printf("Error while executing command '%v': %v", os.Args[1], err)

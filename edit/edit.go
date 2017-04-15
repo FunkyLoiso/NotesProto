@@ -4,13 +4,16 @@ import (
 	"flag"
 	"fmt"
 	"github.com/FunkyLoiso/NotesProto/core"
+	"github.com/FunkyLoiso/NotesProto/db"
+	"log"
 	"os"
+	"strconv"
 )
 
 var _ = fmt.Printf
 
 var _flags *flag.FlagSet
-var id string
+var idStr string
 
 func flags() *flag.FlagSet {
 	if _flags != nil {
@@ -18,7 +21,7 @@ func flags() *flag.FlagSet {
 	}
 
 	_flags = flag.NewFlagSet("edit", flag.ContinueOnError)
-	_flags.StringVar(&id, "i", "", "id of the note to edit")
+	_flags.StringVar(&idStr, "i", "", "id of the note to edit")
 	_flags.Usage = PrintUsage
 	return _flags
 }
@@ -42,8 +45,22 @@ func Exec() error {
 		return err
 	}
 
-	if id != "" {
+	if idStr != "" {
+		id, err := strconv.ParseInt(idStr, 16, 64)
+		if err != nil {
+			log.Printf("Failed to parse id string '%v' to int: %v", idStr, err)
+			return err
+		}
 		// edit by id
+		log.Printf("Retiriving note vith id '%v'", id)
+		note, err := db.GetNote(id)
+		if err != nil {
+			log.Printf("Failed to get note with id = '%v' from db: %v", id, err)
+			return err
+		}
+
+		log.Println("Retrived note: ", *note)
+		//
 	} else {
 		// edit by title or create new
 	}
