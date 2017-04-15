@@ -52,7 +52,7 @@ func Exec() error {
 			return err
 		}
 		// edit by id
-		log.Printf("Retiriving note vith id '%v'", id)
+		log.Printf("Retrieving note with id '%v'", id)
 		note, err := db.GetNote(id)
 		if err != nil {
 			log.Printf("Failed to get note with id = '%v' from db: %v", id, err)
