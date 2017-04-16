@@ -1,13 +1,18 @@
 package edit
 
 import (
+	"bytes"
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/FunkyLoiso/NotesProto/core"
 	"github.com/FunkyLoiso/NotesProto/db"
+	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"strconv"
+	"strings"
 )
 
 var _ = fmt.Printf
@@ -60,6 +65,67 @@ func Exec() error {
 		}
 
 		log.Println("Retrived note: ", *note)
+
+		// open temp file for editor
+		tempFile, err := ioutil.TempFile("", "nptemp_")
+		if err != nil {
+			log.Println("Failed to open temp file:", err)
+			return err
+		}
+		defer os.Remove(tempFile.Name())
+
+		// write text
+		if _, err := tempFile.WriteString(note.Text); err != nil {
+			log.Println("Failed to write note's content to temp file for editing:", err)
+			return err
+		}
+
+		// open editor
+		editor := core.Cfg.Editor
+		if editor == "" {
+			editor = core.GetDefaultEditor()
+		}
+		if editor == "" {
+			errStr := fmt.Sprintln("Editor is undefined")
+			log.Printf(errStr)
+			return errors.New(errStr)
+		}
+
+		// editor might have some arguments so we try to separate them
+		args := strings.Fields(editor)
+		name := args[0]
+		args = append(args[1:], tempFile.Name())
+
+		cmd := exec.Command(name, args...)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		var editorStderr bytes.Buffer
+		cmd.Stderr = &editorStderr
+		log.Println("Going to run", cmd)
+		if err = cmd.Run(); err != nil { // blocks until done
+			log.Printf("Editor '%v' completed with error: %v", cmd.Path, err)
+			if editorStderr.Len() != 0 {
+				log.Println("Stderr is:", editorStderr.String())
+			}
+			return err
+		}
+
+		// determin if file changed
+		if _, err := tempFile.Seek(0, 0); err != nil {
+			log.Println("Seek to start failed for temp file:", err)
+			return err
+		}
+		newBytes, err := ioutil.ReadAll(tempFile)
+		if err != nil {
+			log.Println("Failed to read temp file after editing:", err)
+			return err
+		}
+		newText := string(newBytes)
+		if note.Text != newText {
+			log.Println("Text chaged to:\n", newText)
+		} else {
+			log.Println("Text is the same")
+		}
 		//
 	} else {
 		// edit by title or create new
