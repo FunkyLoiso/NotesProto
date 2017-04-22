@@ -50,7 +50,7 @@ func main() {
 	// read config
 	err = core.Cfg.Read()
 	if err != nil {
-		log.Println("Error reading config file: %v", err)
+		log.Println("Error reading config file:", err)
 	}
 
 	// parse and execute command
