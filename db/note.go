@@ -31,3 +31,18 @@ func GetNote(id int64) (*Note, error) {
 	}
 	return &note, nil
 }
+
+func UpdateNote(n *Note) error {
+	err := Open()
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`
+    UPDATE Note
+      SET notepadid = ?, title = ?, text = ?, favorite = ?, archived = ?
+      WHERE id = ?`,
+		n.NotepadId, n.Title, n.Text, n.Favorite, n.Archived,
+		n.Id)
+	return err
+}

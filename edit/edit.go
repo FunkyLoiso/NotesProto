@@ -110,7 +110,7 @@ func Exec() error {
 			return err
 		}
 
-		// determin if file changed
+		// determine if file changed
 		if _, err := tempFile.Seek(0, 0); err != nil {
 			log.Println("Seek to start failed for temp file:", err)
 			return err
@@ -123,6 +123,17 @@ func Exec() error {
 		newText := string(newBytes)
 		if note.Text != newText {
 			log.Println("Text chaged to:\n", newText)
+			// calculate title
+			note.Title = core.MakeTitle(newText)
+			note.Text = newText
+			// add to db
+			err = db.UpdateNote(note)
+			if err != nil {
+				log.Println("Failed to update note:", err)
+				return err
+			}
+			log.Println("Note updated")
+
 		} else {
 			log.Println("Text is the same")
 		}
