@@ -1,7 +1,6 @@
 package core
 
 import (
-	"io"
 	"strings"
 )
 
@@ -11,11 +10,21 @@ type markdownRemover struct {
 	r *strings.Reader
 }
 
-func (r *markdownRemover) Read(p []byte) (int, error) {
+func (o *markdownRemover) Read(p []byte) (int, error) {
 	// @TODO: implement
-	return r.Read(p)
+	return o.r.Read(p)
 }
 
-func NewMarkdownRemover(t string) io.Reader {
+func (o *markdownRemover) ReadRune() (rune, int, error) {
+	// @TODO: implement
+	return o.r.ReadRune()
+}
+
+func (o *markdownRemover) UnreadRune() error {
+	// @TODO: implement
+	return o.r.UnreadRune()
+}
+
+func NewMarkdownRemover(t string) *markdownRemover {
 	return &markdownRemover{r: strings.NewReader(t)}
 }
