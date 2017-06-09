@@ -22,3 +22,10 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+#project-specific
+*.log
+*.sqlite3
+NotesProto
+main
+
