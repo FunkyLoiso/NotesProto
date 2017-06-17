@@ -9,6 +9,7 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+  "fmt"
 )
 
 const (
@@ -140,4 +141,16 @@ func MakeTitle(text string) string {
 
 	log.Println("Title is", result)
 	return result
+}
+
+/* Write to both stdout and log */
+func LoggedPrintf(format string, a ...interface{}) (n int, err error) {
+  log.Printf(format, a...)
+  return fmt.Printf(format, a...)
+}
+
+/* Write to both stdout and log */
+func LoggedPrintln(a ...interface{}) (n int, err error) {
+  log.Println(a...)
+  return fmt.Println(a...)
 }

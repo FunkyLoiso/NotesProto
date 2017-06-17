@@ -13,7 +13,7 @@ func printHelp() {
 	fmt.Printf("%v - somewhat potentially ok notes manager.\nCommands:\n", core.ExecName)
 
 	maxCmdLengh := 0
-	for cmd, _ := range commands.Commands {
+	for cmd := range commands.Commands {
 		if maxCmdLengh < len(cmd) {
 			maxCmdLengh = len(cmd)
 		}
