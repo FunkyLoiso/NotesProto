@@ -2,3 +2,5 @@ language: go
 go:
   - 1.8.x
   - master
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export EDITOR=/path/to/editor/on/osx; fi
