@@ -47,21 +47,21 @@ func UpdateNote(n *Note) error {
 }
 
 func CreateNote(n *Note) error {
-  err := Open()
-  if err != nil {
-    return err
-  }
+	err := Open()
+	if err != nil {
+		return err
+	}
 
-  r, err := db.Exec(`
+	r, err := db.Exec(`
     INSERT INTO Note (notepadid, title, text, favorite, archived)
       VALUES (?, ?, ?, ?, ?)`,
-    n.NotepadId, n.Title, n.Text, n.Favorite, n.Archived)
-  if err == nil {
-    if id, err := r.LastInsertId(); err != nil {
-      return err
-    } else {
-      n.Id = id
-    }
-  }
-  return err
+		n.NotepadId, n.Title, n.Text, n.Favorite, n.Archived)
+	if err == nil {
+		if id, err := r.LastInsertId(); err != nil {
+			return err
+		} else {
+			n.Id = id
+		}
+	}
+	return err
 }

@@ -4,12 +4,12 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"strings"
 	"unicode"
 	"unicode/utf8"
-  "fmt"
 )
 
 const (
@@ -100,7 +100,7 @@ func makeSplitFunc() func([]byte, bool) (int, []byte, error) {
 			}
 			if r == '\n' {
 				// do not include newline character
-				runesReturned += (nrune - 1)
+				runesReturned += nrune - 1
 				return i + width, data[:i], bufio.ErrFinalToken
 			}
 			if !unicode.IsDigit(r) && !unicode.IsLetter(r) {
@@ -145,12 +145,12 @@ func MakeTitle(text string) string {
 
 /* Write to both stdout and log */
 func LoggedPrintf(format string, a ...interface{}) (n int, err error) {
-  log.Printf(format, a...)
-  return fmt.Printf(format, a...)
+	log.Printf(format, a...)
+	return fmt.Printf(format, a...)
 }
 
 /* Write to both stdout and log */
 func LoggedPrintln(a ...interface{}) (n int, err error) {
-  log.Println(a...)
-  return fmt.Println(a...)
+	log.Println(a...)
+	return fmt.Println(a...)
 }
