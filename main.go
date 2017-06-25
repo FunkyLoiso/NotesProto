@@ -9,21 +9,6 @@ import (
 	"path"
 )
 
-func printHelp() {
-	fmt.Printf("%v - somewhat potentially ok notes manager.\nCommands:\n", core.ExecName)
-
-	maxCmdLengh := 0
-	for cmd := range commands.Commands {
-		if maxCmdLengh < len(cmd) {
-			maxCmdLengh = len(cmd)
-		}
-	}
-	for cmd, info := range commands.Commands {
-		fmt.Printf("%-*v%v\n", maxCmdLengh+4, cmd, info.Description)
-	}
-	fmt.Printf("see '%v help <command>' for command details\n", core.ExecName)
-}
-
 func main() {
 	// open log
 	_, err := os.OpenFile("./NotesProto.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -53,25 +38,8 @@ func main() {
 		log.Println("Error reading config file:", err)
 	}
 
-	// parse and execute command
-	var (
-		cmd   commands.CommandInfo
-		found bool
-	)
-	if len(os.Args) > 1 {
-		cmd, found = commands.Commands[os.Args[1]]
-	} else {
-		found = false
+	if err = commands.ParseAndExec(); err != nil {
+		fmt.Println(err)
 	}
-	if !found {
-		printHelp()
-	} else {
-		log.Printf("Executing comand '%v'", os.Args[1])
-		err = cmd.Execute()
-		if err != nil {
-			log.Printf("Error while executing command '%v': %v", os.Args[1], err)
-		}
-	}
-
 	log.Println("NotesProto stop")
 }
